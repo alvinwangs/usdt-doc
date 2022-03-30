@@ -22,12 +22,12 @@
 
 **请求数据类型**：`application/json`
 
-| 参数名称                | 参数说明                                   | 是否必须 | 数据类型 |
-| ----------------------- | ------------------------------------------ | -------- | -------- |
-| &emsp;&emsp;active      | 是否立即激活                               | false    | boolean  |
-| &emsp;&emsp;callBackUrl | 该账户地址的所有交易都会通过该url 异步通知 | true     | string   |
-| &emsp;&emsp;requestId   | 请求id，唯一性。每一个请求都要使用不同的id | false    | string   |
-| &emsp;&emsp;sign        | 验签，统一签名参考 [签名](#签名) 章节      | true     | string   |
+| 参数名称                | 参数说明                                                    | 是否必须 | 数据类型 |
+| ----------------------- | ----------------------------------------------------------- | -------- | -------- |
+| &emsp;&emsp;active      | 是否立即激活                                                | false    | boolean  |
+| &emsp;&emsp;callBackUrl | 该账户地址的所有交易都会通过该url 异步[回调](#交易回调)通知 | true     | string   |
+| &emsp;&emsp;requestId   | 请求id，唯一性。每一个请求都要使用不同的id                  | false    | string   |
+| &emsp;&emsp;sign        | 验签，统一签名参考 [签名](#签名) 章节                       | true     | string   |
 
 **请求示例**:
 
