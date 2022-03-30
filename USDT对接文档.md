@@ -8,7 +8,7 @@
 
 #### 创建流程
 
-![image-20220329220930018](/Users/alvinwang/Documents/Anter/image-20220329220930018.png)
+![image-20220329220930018](./img/image-20220329220930018.png)
 
 
 
@@ -239,7 +239,7 @@
 
 **交易流程**
 
-​	![image-20220329222625731](/Users/alvinwang/Documents/Anter/image-20220329222625731.png)
+​	![image-20220329222625731](./img/image-20220329222625731.png)
 
 
 
@@ -309,7 +309,7 @@
 
 ### 账户资产归集
 
-![image-20220329224257957](/Users/alvinwang/Documents/Anter/image-20220329224257957.png)
+![image-20220329224257957](./img/image-20220329224257957.png)
 
 
 
