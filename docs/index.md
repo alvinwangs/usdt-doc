@@ -164,12 +164,11 @@
 | lastPage                  |                                                          | integer(int32) | integer(int32)   |
 | list                      |                                                          | array          | TransactionLogPo |
 | &emsp;&emsp;amount        | 转账金额                                                 | string         |                  |
-| &emsp;&emsp;contractName  | 资产类型：TRX、TRX20                                     | integer(int32) |                  |
+| &emsp;&emsp;contractName  | 资产类型：TRX、TRC20                                     | integer(int32) |                  |
 | &emsp;&emsp;createTime    |                                                          | Timestamp      | Timestamp        |
 | &emsp;&emsp;fee           | 转账手续费                                               | string         |                  |
 | &emsp;&emsp;id            | id                                                       | integer(int64) |                  |
 | &emsp;&emsp;message       | 转帐信息                                                 | string         |                  |
-| &emsp;&emsp;netFee        | 转账网络费                                               | string         |                  |
 | &emsp;&emsp;ownerAddress  | 付款地址                                                 | string         |                  |
 | &emsp;&emsp;precision     | 转账金额精度                                             | integer(int32) |                  |
 | &emsp;&emsp;startBlockNum | 转账时块号                                               | integer(int64) |                  |
@@ -212,7 +211,6 @@
 			"fee": "",
 			"id": 0,
 			"message": "",
-			"netFee": "",
 			"ownerAddress": "",
 			"precision": 0,
 			"startBlockNum": 0,
@@ -282,14 +280,14 @@
 **请求参数**:
 
 
-| 参数名称                 | 参数说明                                   | 是否必须 | 数据类型 |
-| ------------------------ | ------------------------------------------ | -------- | -------- |
-| &emsp;&emsp;amount       | 转账金额，不同资产类型精度不一样。         | false    | string   |
-| &emsp;&emsp;contractName | 资产类型：TRX、TRX20                       | false    | string   |
-| &emsp;&emsp;ownerAddress | 转账人地址                                 | false    | string   |
-| &emsp;&emsp;requestId    | 请求id，唯一性。每一个请求都要使用不同的id | false    | string   |
-| &emsp;&emsp;sign         | 验签。统一签名参考 [签名](#签名) 章节      | true     | string   |
-| &emsp;&emsp;toAddress    | 收款人地址                                 | false    | string   |
+| 参数名称                 | 参数说明                                                     | 是否必须 | 数据类型 |
+| ------------------------ | ------------------------------------------------------------ | -------- | -------- |
+| &emsp;&emsp;amount       | 转账金额，不同资产类型精度不一样，业务方不需要特殊处理精度，例如支付100USDT，传入100即可 | false    | string   |
+| &emsp;&emsp;contractName | 资产类型：TRX、TRC20                                         | false    | string   |
+| &emsp;&emsp;ownerAddress | 转账人地址                                                   | false    | string   |
+| &emsp;&emsp;requestId    | 请求id，唯一性。每一个请求都要使用不同的id                   | false    | string   |
+| &emsp;&emsp;sign         | 验签。统一签名参考 [签名](#签名) 章节                        | true     | string   |
+| &emsp;&emsp;toAddress    | 收款人地址                                                   | false    | string   |
 
 **响应状态**:
 
@@ -347,7 +345,7 @@
 
 | 参数名称                 | 参数说明                                   | 是否必须 | 数据类型 |
 | ------------------------ | ------------------------------------------ | -------- | -------- |
-| &emsp;&emsp;contractName | 资产类型：TRX、TRX20                       | true     | string   |
+| &emsp;&emsp;contractName | 资产类型：TRX、TRC20                       | true     | string   |
 | &emsp;&emsp;requestId    | 请求id，唯一性。每一个请求都要使用不同的id | false    | string   |
 | &emsp;&emsp;sign         | 验签。统一签名参考 [签名](#签名) 章节      | true     | string   |
 
@@ -416,7 +414,7 @@
 }
 ```
 
-**排序后的内容未**：
+**排序后的内容**：
 
 ```
 amount=10.001&contractName=USDT&ownerAddress=TAbcDeFGKJSKDTrdfgTFD&requestId=uuid&toAddress=TCCstFdfgSKDTrdfgTFD
@@ -461,13 +459,12 @@ SECP256K1.PrivateKey privateKey = SECP256K1.PrivateKey.create("83f15af3f6c2e5f71
 | transactionId | 流水id，可在区块链上查到该笔交易的详细信息                   | true     | string     |
 | ownerAddress  | 付款方 地址                                                  | true     | string     |
 | toAddress     | 收款方地址                                                   | true     | string     |
-| contractName  | 资产类型，TRX、TRX20                                         | true     | string     |
-| amount        | 交易金额                                                     | true     | BigDecimal |
+| contractName  | 资产类型，TRX、TRC20                                         | true     | string     |
+| amount        | 交易金额，业务方不需要特殊处理精度，例如支付100USDT，传入100即可 | true     | BigDecimal |
 | precision     | 该资产的精度，不同的资产类型有不同的精度                     | true     | Integer    |
 | status        | 交易状态。0：默认状态，交易提交后的初始状态，1：正在确认；2： 成功；3 失败 | true     | Integer    |
 | message       | 交易信息。失败原因                                           | true     | String     |
-| fee           | 手续费，手续费=netFee + energyFee 的转换，非单纯的累加       | true     | Integer    |
-| netFee        | 网络带宽费                                                   | true     | Integer    |
+| fee           | 手续费                                                       | true     | Integer    |
 | energyFee     | 能量费                                                       | true     | Integer    |
 | type          | 转账类型：1：创建账户激活费用；2：转出；3：转入；4：归集     | true     | Integer    |
 
