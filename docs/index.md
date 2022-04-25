@@ -140,7 +140,7 @@
 ]
 ```
 
-### 查询流水
+### 分页查询流水
 
 **接口地址**:`/v1/transaction`
 
@@ -155,7 +155,6 @@
 
 
 **接口描述**:
-
 
 **请求参数**:
 
@@ -269,6 +268,44 @@
 	"total": 0
 }
 ```
+
+### 查询单笔流水
+
+**接口地址**:`/v1/transaction`/{transactionId}
+
+
+**请求方式**:`GET`
+
+**请求数据类型**:`application/x-www-form-urlencoded`
+
+**响应数据类型**:`*/*`
+
+**接口描述**:  查询单笔流水
+
+**请求参数**:
+
+| 参数名称      | 参数说明                 | 请求类型 | 是否必须 | 数据类型 |
+| ------------- | ------------------------ | -------- | -------- | -------- |
+| transactionId | 流水id（回调、转账返回） | path     | true     | string   |
+
+**响应参数**:
+
+
+| 参数名称                  | 参数说明                                                 | 类型           | schema |
+| ------------------------- | -------------------------------------------------------- | -------------- | ------ |
+| &emsp;&emsp;amount        | 转账金额                                                 | string         |        |
+| &emsp;&emsp;contractName  | 资产类型：TRX、TRC20                                     | integer(int32) |        |
+| &emsp;&emsp;fee           | 转账手续费                                               | string         |        |
+| &emsp;&emsp;id            | id                                                       | integer(int64) |        |
+| &emsp;&emsp;message       | 转帐信息                                                 | string         |        |
+| &emsp;&emsp;ownerAddress  | 付款地址                                                 | string         |        |
+| &emsp;&emsp;precision     | 转账金额精度                                             | integer(int32) |        |
+| &emsp;&emsp;startBlockNum | 转账时块号                                               | integer(int64) |        |
+| &emsp;&emsp;status        | 转账状态                                                 | integer(int32) |        |
+| &emsp;&emsp;toAddress     | 收款地址                                                 | string         |        |
+| &emsp;&emsp;transactionId | 交易流水                                                 | string         |        |
+| &emsp;&emsp;type          | 转账类型：1：创建账户激活费用；2：转出；3：转入；4：归集 | integer(int32) |        |
+| &emsp;&emsp;tradeTime     | 交易时间                                                 | string         |        |
 
 ## 交易
 
@@ -489,7 +526,7 @@ SECP256K1.PrivateKey privateKey = SECP256K1.PrivateKey.create("83f15af3f6c2e5f71
 | transactionId | 流水id，可在区块链上查到该笔交易的详细信息                   | true     | string     |
 | ownerAddress  | 付款方 地址                                                  | true     | string     |
 | toAddress     | 收款方地址                                                   | true     | string     |
-| contractName  | 资产类型，TRX、TRC20                                         | true     | string     |
+| contractName  | 资产类型，**TRX**、**TRC20**                                 | true     | string     |
 | amount        | 交易金额，业务方不需要特殊处理精度，例如支付100USDT，传入100即可 | true     | BigDecimal |
 | precision     | 该资产的精度，不同的资产类型有不同的精度                     | true     | Integer    |
 | status        | 交易状态。0：默认状态，交易提交后的初始状态，1：正在确认；2： 成功；3 失败 | true     | Integer    |
@@ -497,7 +534,8 @@ SECP256K1.PrivateKey privateKey = SECP256K1.PrivateKey.create("83f15af3f6c2e5f71
 | fee           | 手续费                                                       | true     | Integer    |
 | energyFee     | 能量费                                                       | true     | Integer    |
 | type          | 转账类型：1：创建账户激活费用；2：转出；3：转入；4：归集     | true     | Integer    |
-
+| tradeTime     | 交易时间：**yyyy-MM-dd HH:mm:ss**                            |          |            |
+| sign          | 交易的签名。参考 [签名](#签名) 章节                          |          |            |
 
 **响应状态**:
 
@@ -522,6 +560,7 @@ SECP256K1.PrivateKey privateKey = SECP256K1.PrivateKey.create("83f15af3f6c2e5f71
 | 202000 | 重复请求                   |
 | 202001 | 数据录入重复, 请检查后重试 |
 | 400000 | 参数异常                   |
+| 400001 | 签名错误                   |
 | 404000 | 请求的资源不存在           |
 | 401000 | 权限不足                   |
 | 500000 | 服务端异常, 请稍后再试     |
