@@ -336,7 +336,6 @@
 {
   "amount": "",
   "contractName": "",
-  "ownerAddress": "",
   "toAddress": ""，
   "requestId": "",
   "sign": ""
@@ -351,7 +350,6 @@
 | ------------ | ------------------------------------------------------------ | -------- | ------ |
 | &emsp;amount | 转账金额，不同资产类型精度不一样，业务方不需要特殊处理精度，例如支付100USDT，传入100即可 | false    | string |
 | contractName | 资产类型：TRX、TRC20                                         | false    | string |
-| ownerAddress | 转账人地址                                                   | false    | string |
 | requestId    | 请求id，唯一性。每一个请求都要使用不同的id                   | false    | string |
 | sign         | 验签。统一签名参考 [签名](#签名) 章节                        | true     | string |
 | toAddress    | 收款人地址                                                   | false    | string |
@@ -378,7 +376,7 @@
 }
 ```
 
-### 账户资产归集
+### 账户资产归集--所有账户
 
 ![image-20220329224257957](./img/image-20220329224257957.png)
 
@@ -449,16 +447,82 @@
 
 
 
+### 账户资产归集--指定账户
+
+**接口描述**: 将指定地址的资金归集到母账户。（需要指定资产类型），该接口每个账户归集均会产生[手续费](#手续费)
+
+**接口地址**:`/v1/accounts/collect/_partial`
+
+**请求方式**:`POST`
+
+**请求数据类型**:`application/json`
+
+**响应数据类型**:`*/*`
+
+**请求示例**:
+
+
+```javascript
+{
+  "contractName": "",
+  "requestId": "",
+   "accountAddress":[]
+  "sign": "",
+  "sortParam": ""
+}
+```
+
+
+**请求参数**:
+
+
+| 参数名称                   | 参数说明                                   | 是否必须 | 数据类型 |
+| -------------------------- | ------------------------------------------ | -------- | -------- |
+| &emsp;&emsp;contractName   | 资产类型：TRX、TRC20                       | true     | string   |
+| &emsp;&emsp;accountAddress | 指定账户地址列表                           | true     | Array    |
+| &emsp;&emsp;requestId      | 请求id，唯一性。每一个请求都要使用不同的id | false    | string   |
+| &emsp;&emsp;sign           | 验签。统一签名参考 [签名](#签名) 章节      | true     | string   |
+
+**响应状态**:
+
+
+| 状态码 | 说明                    |
+| ------ | ----------------------- |
+| 200    | OK,非200 均视为请求失败 |
+
+
+**响应参数**:
+
+
+| 参数名称     |                  参数说明 | 类型   | schema |
+| ------------ | ------------------------: | ------ | ------ |
+| ownerAddress |                  客户账户 | string |        |
+| result       | 请求结果：SUCCESS, FAILED | string |        |
+| message      |                      信息 | string |        |
+
+**响应示例**:
+
+```javascript
+[
+  {
+    "ownerAddress": "",
+    "result": "",
+    "message":""
+  }
+]
+```
+
+
+
 ## 签名
 
 对接初期，系统会为**业务方**生成一对**公私钥** ，**私钥**保存于业务方服务器中（妥善保管）用于签名，公钥保存于支付服务，用于验签，从而实现身份验证。
 
 签名步骤：
 
-1. 请求参数除**sign** 之外的所有参数按照字典升序排序；
+1. 请求参数除**sign** 之外的所有参数按照字典升序排序；如果某个字段是Array 字段则array 的内容以","分隔
 2. 对排序后的内容进行 hash计算
-3. 使用 SECP256K1 算法对hash 进行签名
-4. 将签名转换成16进制
+4. 将hash转换成16进制
 
 ### 示例
 
@@ -487,24 +551,33 @@
 amount=10.001&contractName=USDT&ownerAddress=TAbcDeFGKJSKDTrdfgTFD&requestId=uuid&toAddress=TCCstFdfgSKDTrdfgTFD
 ```
 
-**JAVA签名**代码示例：
+**JAVA签名**代码示例一：
 
 ```java
-SECP256K1.PrivateKey privateKey = SECP256K1.PrivateKey.create("83f15af3f6c2e5f719996d1689085cc02a89f9df16e76fac5eb4fd3bcb6962e8");
-        SECP256K1.PublicKey publicKey = SECP256K1.PublicKey.create(privateKey);
-        SECP256K1.KeyPair keyPair = new SECP256K1.KeyPair(privateKey, publicKey);
-        String plainText = "amount=10.001&contractName=TRC20&ownerAddress=TAbcDeFGKJSKDTrdfgTFD&requestId=uuid&toAddress=TCCstFdfgSKDTrdfgTFD";
+				String secret=83f15af3f6c2e5f719996d1689085cc02a89f9df16e76fac5eb4fd3bcb6962e8
+        String plainText = "amount=10.001&contractName=TRC20&ownerAddress=TAbcDeFGKJSKDTrdfgTFD&requestId=uuid&toAddress=TCCstFdfgSKDTrdfgTFD"+secret;	
         //计算hash
         SHA256.Digest digest = new SHA256.Digest();
         digest.update(plainText.getBytes());
         byte[] hash = digest.digest();
-        // 对hash 签名
-        SECP256K1.Signature sigBytes = SECP256K1.sign(Bytes32.wrap(hash), keyPair);
-        String sign = Hex.toHexString(sigBytes.encodedBytes().toArray());
+        String sign = Hex.toHexString(hash);
         System.out.println("signature -------- >>>>>> " + sign);
 ```
 
+**JAVA签名**代码示例二：
 
+以指定账户归集资产为例：
+
+```java
+String secret=83f15af3f6c2e5f719996d1689085cc02a89f9df16e76fac5eb4fd3bcb6962e8
+String plainText = "contractName=TRC20&accountAddress=TAbcDeFGKJSKDTrdfgTFD,Bcsdfe4456sdfd4565&requestId=uuid"+secret;	
+        //计算hash
+SHA256.Digest digest = new SHA256.Digest();
+digest.update(plainText.getBytes());
+byte[] hash = digest.digest();
+String sign = Hex.toHexString(hash);
+System.out.println("signature -------- >>>>>> " + sign);
+```
 
 ## 交易回调
 
