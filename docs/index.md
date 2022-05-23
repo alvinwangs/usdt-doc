@@ -466,7 +466,7 @@
 {
   "contractName": "",
   "requestId": "",
-   "accountAddress":[]
+   "accountAddressList":[]
   "sign": "",
   "sortParam": ""
 }
@@ -476,12 +476,12 @@
 **请求参数**:
 
 
-| 参数名称                   | 参数说明                                   | 是否必须 | 数据类型 |
-| -------------------------- | ------------------------------------------ | -------- | -------- |
-| &emsp;&emsp;contractName   | 资产类型：TRX、TRC20                       | true     | string   |
-| &emsp;&emsp;accountAddress | 指定账户地址列表                           | true     | Array    |
-| &emsp;&emsp;requestId      | 请求id，唯一性。每一个请求都要使用不同的id | false    | string   |
-| &emsp;&emsp;sign           | 验签。统一签名参考 [签名](#签名) 章节      | true     | string   |
+| 参数名称                       | 参数说明                                   | 是否必须 | 数据类型 |
+| ------------------------------ | ------------------------------------------ | -------- | -------- |
+| &emsp;&emsp;contractName       | 资产类型：TRX、TRC20                       | true     | string   |
+| &emsp;&emsp;accountAddressList | 指定账户地址列表                           | true     | Array    |
+| &emsp;&emsp;requestId          | 请求id，唯一性。每一个请求都要使用不同的id | false    | string   |
+| &emsp;&emsp;sign               | 验签。统一签名参考 [签名](#签名) 章节      | true     | string   |
 
 **响应状态**:
 
@@ -570,7 +570,7 @@ amount=10.001&contractName=USDT&ownerAddress=TAbcDeFGKJSKDTrdfgTFD&requestId=uui
 
 ```java
 String secret=83f15af3f6c2e5f719996d1689085cc02a89f9df16e76fac5eb4fd3bcb6962e8
-String plainText = "contractName=TRC20&accountAddress=TAbcDeFGKJSKDTrdfgTFD,Bcsdfe4456sdfd4565&requestId=uuid"+secret;	
+String plainText = "contractName=TRC20&accountAddressList=TAbcDeFGKJSKDTrdfgTFD,Bcsdfe4456sdfd4565&requestId=uuid"+secret;	
         //计算hash
 SHA256.Digest digest = new SHA256.Digest();
 digest.update(plainText.getBytes());
